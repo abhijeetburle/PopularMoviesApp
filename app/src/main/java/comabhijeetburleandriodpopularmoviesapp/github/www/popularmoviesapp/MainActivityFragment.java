@@ -14,8 +14,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +37,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.apptasks.FetchMovieListTask;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.globalconstants.GlobalContants;
+import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.FetchMovieListParam;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.MovieDBWrapper;
 
 /**
@@ -43,7 +47,6 @@ import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.
  */
 public class MainActivityFragment extends Fragment {
     private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
-    ArrayAdapter mMovieListAdapter;
     public MainActivityFragment() {
     }
 
@@ -51,18 +54,30 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         List<MovieDBWrapper> list_item_movie_thumbnail = new ArrayList<MovieDBWrapper>();
-        mMovieListAdapter = new MovieListAdapter(getActivity(),
+        ArrayAdapter mMovieListAdapter = new MovieListAdapter(getActivity(),
                 R.layout.list_item_movie, R.id.imgViewMoviePosterThumbnail,
                 list_item_movie_thumbnail);
 
         View objRootView = inflater.inflate(R.layout.fragment_main, container, false);
-        ListView objlistItemView = (ListView) objRootView.findViewById(R.id.listview_movie);
+        AbsListView objlistItemView = (AbsListView) objRootView.findViewById(R.id.listview_movie);
         objlistItemView.setAdapter(mMovieListAdapter);
+/*
+        objlistItemView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                Log.i(LOG_TAG, "[onScrollStateChanged]["+view.getId()+"]["+scrollState+"]");
+            }
 
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                Log.i(LOG_TAG, "[onScroll]["+view.getId()+"]["+firstVisibleItem+"]["+visibleItemCount+"]["+totalItemCount+"]");
+            }
+        });
+*/
         objlistItemView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MovieDBWrapper movie = (MovieDBWrapper) mMovieListAdapter.getItem(position);
+                MovieDBWrapper movie = (MovieDBWrapper) ((AbsListView) view).getAdapter().getItem(position);
                 Intent objDetailIntent = new Intent(getActivity(), DetailActivity.class)
                         .putExtra(GlobalContants.JSON_TITLE, movie.title)
                         .putExtra(GlobalContants.JSON_POSTER_PATH, movie.posterPath)
@@ -73,138 +88,28 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
-        updateView();
-
+        updateView(objRootView);
         return objRootView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        updateView();
+        updateView(getView());
     }
 
-    public void updateView(){
+    public void updateView(View objRootView) {
         try {
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String sortOrder = pref.getString(getString(R.string.pref_sort_order_key),
                     getString(R.string.pref_sort_order_default));
-            new FetchMovieListTask().execute(sortOrder);
+            AbsListView objlistItemView = (AbsListView) objRootView.findViewById(R.id.listview_movie);
+            new FetchMovieListTask().execute(new FetchMovieListParam(((ArrayAdapter) objlistItemView.getAdapter()), null, sortOrder));
+
         } catch (Exception e) {
             Log.e(LOG_TAG, "Movie list fetching failed", e);
         }
     }
 
-    public class FetchMovieListTask extends AsyncTask<String, Void, List<MovieDBWrapper>> {
 
-        private final String LOG_TAG = FetchMovieListTask.class.getSimpleName();
-
-        private List<MovieDBWrapper> praseMovieList(String responseJson, int fetchCount)
-                throws JSONException {
-
-            JSONObject objResponseJson = new JSONObject(responseJson);
-            JSONArray jsonMovieListArray = objResponseJson.getJSONArray(GlobalContants.JSON_MOVIE_LIST);
-
-            List<MovieDBWrapper> resultStrs = new ArrayList<MovieDBWrapper>();
-            MovieDBWrapper objMovieDBWrapper;
-            for(int i = 0; i < jsonMovieListArray.length(); i++) {
-                JSONObject jsonMovieRecord = jsonMovieListArray.getJSONObject(i);
-                objMovieDBWrapper = new MovieDBWrapper();
-                objMovieDBWrapper.posterPath  = jsonMovieRecord.getString(GlobalContants.JSON_POSTER_PATH);
-                objMovieDBWrapper.isAdult  = jsonMovieRecord.getBoolean(GlobalContants.JSON_ADULT);
-                objMovieDBWrapper.overview  = jsonMovieRecord.getString(GlobalContants.JSON_OVERVIEW);
-                objMovieDBWrapper.strReleaseDate  = jsonMovieRecord.getString(GlobalContants.JSON_RELEASE_DATE);
-                objMovieDBWrapper.strId  = jsonMovieRecord.getString(GlobalContants.JSON_ID);
-                objMovieDBWrapper.originalTitle = jsonMovieRecord.getString(GlobalContants.JSON_ORIGINAL_TITLE);
-                objMovieDBWrapper.originalLanguage  = jsonMovieRecord.getString(GlobalContants.JSON_ORIGINAL_LANGAUGE);
-                objMovieDBWrapper.title  = jsonMovieRecord.getString(GlobalContants.JSON_TITLE);
-                objMovieDBWrapper.backdropPath  = jsonMovieRecord.getString(GlobalContants.JSON_BACKDROP_PATH);
-                objMovieDBWrapper.strPopularity  = jsonMovieRecord.getString(GlobalContants.JSON_POPULARITY);
-                objMovieDBWrapper.strVoteCount  = jsonMovieRecord.getString(GlobalContants.JSON_VOTE_COUNT);
-                objMovieDBWrapper.hasVideo  = jsonMovieRecord.getBoolean(GlobalContants.JSON_VIDEO);
-                objMovieDBWrapper.strVoteAverage  = jsonMovieRecord.getString(GlobalContants.JSON_RATING);
-
-                Log.d(LOG_TAG, "Information ::  Movie[" + objMovieDBWrapper + "]");
-                resultStrs.add(objMovieDBWrapper);
-            }
-            return resultStrs;
-
-        }
-        @Override
-        protected List<MovieDBWrapper> doInBackground(String... params) {
-
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-
-            String responseJsonStr = null;
-
-            try {
-                final String API_KEY = "api_key";
-                String sortOrder = "popular";
-                if(params!=null && params.length > 0){
-                    if(getString(R.string.pref_sort_order_rating).equalsIgnoreCase(params[0])){
-                        sortOrder = "top_rated";
-                    }
-                }
-
-                Uri builtUri = Uri.parse(GlobalContants.MOVIEDB_BASE_URL + sortOrder + "?").buildUpon()
-                        .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
-                        .build();
-                URL url = new URL(builtUri.toString());
-
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    return null;
-                }
-                responseJsonStr = buffer.toString();
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Error ", e);
-                return null;
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
-                    }
-                }
-            }
-
-            try {
-                return praseMovieList(responseJsonStr, 5);
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<MovieDBWrapper> movieList) {
-            if (movieList != null) {
-                mMovieListAdapter.clear();
-                for(MovieDBWrapper movie : movieList) {
-                    mMovieListAdapter.add(movie);
-                }
-            }
-        }
-    }
 }

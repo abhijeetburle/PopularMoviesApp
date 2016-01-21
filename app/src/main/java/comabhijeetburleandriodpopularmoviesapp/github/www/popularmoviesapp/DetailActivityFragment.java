@@ -32,9 +32,13 @@ public class DetailActivityFragment extends Fragment {
                 .setText(intent.getStringExtra(GlobalContants.JSON_TITLE));
         // <!-- movie poster image -->
         ImageView posterView = (ImageView) rootView.findViewById(R.id.imgPoster);
-        Picasso.with(getActivity()).load(GlobalContants.POSTER_BASE_PATH +
-                                            intent.getExtras().get(GlobalContants.JSON_POSTER_PATH))
-                                   .into(posterView);
+        Picasso.with(getActivity())
+                .load(GlobalContants.POSTER_BASE_PATH + intent.getExtras().get(GlobalContants.JSON_POSTER_PATH))
+                        //.placeholder(R.drawable.user_placeholder)
+                        //.error(R.drawable.user_placeholder_error)
+                .error(R.drawable.ic_notifications_black_24dp)
+                .into(posterView);
+
         // <!-- A plot synopsis (called overview in the api) -->
         ((TextView) rootView.findViewById(R.id.txtPlotSynopsis))
                 .setText(intent.getStringExtra(GlobalContants.JSON_OVERVIEW));

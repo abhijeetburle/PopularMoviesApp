@@ -9,9 +9,14 @@
     tools:context="comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.MainActivityFragment"
     tools:showIn="@layout/activity_main">
 
-    <ListView
+    <GridView
         android:id="@+id/listview_movie"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:horizontalSpacing="0dp"
+        android:numColumns="2"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="0dp" />
 
 </FrameLayout>

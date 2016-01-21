@@ -21,7 +21,7 @@ public class GlobalContants {
 
 
     public static final String MOVIEDB_BASE_URL ="http://api.themoviedb.org/3/movie/";
-    public static final String THUMBNAIL_BASE_PATH = "http://image.tmdb.org/t/p/w185";
+    public static final String THUMBNAIL_BASE_PATH = "http://image.tmdb.org/t/p/w780";
     public static final String POSTER_BASE_PATH = "http://image.tmdb.org/t/p/w342";
 
 }
