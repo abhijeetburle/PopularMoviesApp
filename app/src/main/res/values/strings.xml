@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_detail">Movie detail</string>
+
+    <!-- original title -->
+    <string name="movie_details_title">Title</string>
+    <!-- movie poster image thumbnail -->
+    <string name="movie_details_thumbnail_description">Image</string>
+    <!-- A plot synopsis (called overview in the api) -->
+    <string name="movie_details_synopsis">Plot Synopsis</string>
+    <!-- user rating (called vote_average in the api) -->
+    <string name="movie_details_user_rating">Rating</string>
+    <!-- release date      -->
+    <string name="movie_details_release_date">Release Date</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+    <string name="pref_sort_order_label">Sort Order</string>
+    <string name="pref_sort_order_key">settingSortOrder</string>
+    <string name="pref_sort_order_default">sort-by-popularity</string>
+    <string name="pref_sort_order_rating">sort-by-rating</string>
+    <string-array name="pref_sort_order_values">
+        <item>sort-by-popularity</item>
+        <item>sort-by-rating</item>
+    </string-array>
+    <string-array name="pref_sort_order_options">
+        <item>Popularity</item>
+        <item>Rating</item>
+    </string-array>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+</resources>
