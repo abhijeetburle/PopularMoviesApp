@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.apptasks.FetchMovieListTask;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.globalconstants.GlobalContants;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.FetchMovieListParam;
@@ -47,19 +49,24 @@ import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.
  */
 public class MainActivityFragment extends Fragment {
     private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+
+    @Bind(R.id.listview_movie) AbsListView objlistItemView;
+
     public MainActivityFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View objRootView = inflater.inflate(R.layout.fragment_main, container, false);
+        ButterKnife.bind(this, objRootView);
         List<MovieDBWrapper> list_item_movie_thumbnail = new ArrayList<MovieDBWrapper>();
         ArrayAdapter mMovieListAdapter = new MovieListAdapter(getActivity(),
                 R.layout.list_item_movie, R.id.imgViewMoviePosterThumbnail,
                 list_item_movie_thumbnail);
 
-        View objRootView = inflater.inflate(R.layout.fragment_main, container, false);
-        AbsListView objlistItemView = (AbsListView) objRootView.findViewById(R.id.listview_movie);
+
+
         objlistItemView.setAdapter(mMovieListAdapter);
 /*
         objlistItemView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -77,7 +84,7 @@ public class MainActivityFragment extends Fragment {
         objlistItemView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MovieDBWrapper movie = (MovieDBWrapper) ((AbsListView) view).getAdapter().getItem(position);
+                MovieDBWrapper movie = (MovieDBWrapper) ((AbsListView) parent).getAdapter().getItem(position);
                 Intent objDetailIntent = new Intent(getActivity(), DetailActivity.class)
                         .putExtra(GlobalContants.JSON_TITLE, movie.title)
                         .putExtra(GlobalContants.JSON_POSTER_PATH, movie.posterPath)

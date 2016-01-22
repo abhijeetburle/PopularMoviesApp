@@ -9,71 +9,136 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:scrollbarStyle="outsideOverlay">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         tools:context="comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.DetailActivityFragment"
         tools:showIn="@layout/activity_detail">
+
+        <!-- movie poster image -->
+        <ImageView
+            android:id="@+id/imgPoster"
+            android:layout_width="@dimen/imgPosterWidth"
+            android:layout_height="@dimen/imgPosterHeight"
+            android:layout_marginLeft="@dimen/detailsLayoutMarginLeft"
+            android:layout_marginStart="@dimen/detailsLayoutMarginStart"
+            android:layout_marginTop="@dimen/detailsLayoutMarginTop"
+            android:contentDescription="content_desc_movie_poster"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            tools:background="#ccc"
+            />
 
         <!-- original title -->
         <TextView
             android:id="@+id/txtTitle"
-            style="@android:style/TextAppearance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:paddingBottom="@dimen/fab_margin"
             android:paddingTop="@dimen/fab_margin"
-            android:text="My Nanodegree Apps!" />
-        <!-- movie poster image -->
-        <ImageView
-            android:id="@+id/imgPoster"
-            android:layout_width="match_parent"
-            android:layout_height="280dp"
-            android:layout_gravity="center_horizontal"
-            android:contentDescription="content_desc_movie_poster"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:scaleType="fitCenter"
-            tools:background="#ccc" />
-        <!-- A plot synopsis (called overview in the api) -->
+            android:text="Title"
+            android:layout_marginEnd="@dimen/detailsLayoutMarginLeft"
+            android:layout_marginLeft="@dimen/detailsLayoutMarginLeft"
+            android:layout_marginRight="@dimen/detailsLayoutMarginLeft"
+            android:layout_marginStart="@dimen/detailsLayoutMarginStart"
+            android:layout_marginTop="@dimen/detailsLayoutMarginDefault"
+            android:layout_toEndOf="@id/imgPoster"
+            android:layout_toRightOf="@id/imgPoster"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            tools:text="Title"
+            />
+        <!-- release date      -->
         <TextView
-            android:id="@+id/txtPlotSynopsis"
-            style="@android:style/TextAppearance"
+            android:id="@+id/txtReleaseDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:paddingBottom="@dimen/fab_margin"
-            android:paddingTop="@dimen/fab_margin"
-            android:text="My Nanodegree Apps2!" />
+            android:layout_marginEnd="@dimen/detailsLayoutMarginDefault"
+            android:layout_marginLeft="@dimen/detailsLayoutMarginLeft"
+            android:layout_marginRight="@dimen/detailsLayoutMarginDefault"
+            android:layout_marginStart="@dimen/detailsLayoutMarginLeft"
+            android:layout_toEndOf="@id/imgPoster"
+            android:layout_toRightOf="@id/imgPoster"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            tools:text="Date"
+            />
         <!-- user rating (called vote_average in the api) -->
         <TextView
             android:id="@+id/txtUserRating"
             style="@android:style/TextAppearance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:paddingBottom="@dimen/fab_margin"
-            android:text="My Nanodegree Apps2!" />
-        <!-- release date      -->
+            android:layout_below="@id/txtReleaseDate"
+            android:layout_toEndOf="@id/imgPoster"
+            android:layout_toRightOf="@id/imgPoster"
+            android:text="My Nanodegree Apps2!"
+            tools:text="Rating"/>
+
+        <!-- A plot synopsis (called overview in the api) -->
         <TextView
-            android:id="@+id/txtReleaseDate"
+            android:id="@+id/txtPlotSynopsis"
             style="@android:style/TextAppearance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:paddingBottom="@dimen/fab_margin"
-            android:text="My Nanodegree Apps2!" />
+            android:layout_below="@id/imgPoster"
+            android:text="My Nanodegree Apps2!"
+            tools:text="With the nation of Panem in a full scale war, Katniss confronts President Snow in the final showdown. Teamed with a group of her closest friends – including Gale, Finnick, and Peeta – Katniss goes off on a mission with the unit from District 13 as they risk their lives to stage an assassination attempt on President Snow who has become increasingly obsessed with destroying her. The mortal traps, enemies, and moral choices that await Katniss will challenge her more than any arena she faced in The Hunger Games."
+            />
+        <!-- Trailer header text -->
+        <TextView
+            android:id="@+id/lblTrailer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtPlotSynopsis"
+            android:text="@string/trailers"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:visibility="gone"
+            />
+        <!-- Trailers -->
+        <HorizontalScrollView
+            android:id="@+id/scrollviewTrailer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lblTrailer"
+            android:clipChildren="false"
+            android:visibility="gone"
+            tools:ignore="Trailers">
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/listview_trailer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:orientation="horizontal"
+                android:showDividers="middle"
+                />
+
+        </HorizontalScrollView>
+        <!-- Reviews header text -->
+        <TextView
+            android:id="@+id/lblReview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/scrollviewTrailer"
+            android:text="@string/reviews"
+            android:visibility="gone"
+         />
+
+        <LinearLayout
+            android:id="@+id/listview_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lblReview"
+            android:clipChildren="false"
+            android:orientation="vertical"
+            android:visibility="gone"
+            />
+
+
+    </RelativeLayout>
 
 </ScrollView>

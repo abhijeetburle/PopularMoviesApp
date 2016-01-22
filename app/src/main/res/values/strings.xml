@@ -33,4 +33,7 @@
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
+    <string name="trailers">Trailers</string>
+    <string name="reviews">Reviews</string>
+    <string name="imgVideoThumbnailInfo">Description</string>
 </resources>
