@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 /**
  * Created by abhijeet.burle on 2016/01/22.
  */
-public class MovieDBTrailerWrapper {
+public class MovieDBTrailerWrapper extends MovieDBBaseWrapper{
     public static final String SITE_YOUTUBE = "YouTube";
 
     public String site;

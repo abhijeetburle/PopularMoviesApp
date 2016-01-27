@@ -6,11 +6,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.globalconstants.GlobalContants;
+
 public class DetailActivity extends AppCompatActivity {
+    private final String LOG_TAG = DetailActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +23,19 @@ public class DetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if(savedInstanceState == null){
+            Bundle args = new Bundle();
+            args.putParcelable(GlobalContants.MOVIE_ITEM, getIntent().getParcelableExtra(GlobalContants.MOVIE_ITEM));
+
+            DetailActivityFragment objDetailActivityFragment = new DetailActivityFragment();
+            objDetailActivityFragment.setArguments(args);
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_detail_container, objDetailActivityFragment)
+                    .commit();
+        }
     }
 
     @Override

@@ -17,4 +17,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="MovieListStyle">
+        <item name="android:numColumns">3</item>
+    </style>
+
 </resources>

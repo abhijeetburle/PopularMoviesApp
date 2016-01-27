@@ -19,9 +19,18 @@ public class GlobalContants {
     public static final String JSON_VIDEO = "video";
     public static final String JSON_RATING = "vote_average";
 
+    public static final String JSON_REVIEW_LIST = "results";
+    public static final String JSON_REVIEW_AUTHOR = "author";
+    public static final String JSON_REVIEW_CONTENT = "content";
+    public static final String JSON_REVIEW_URL = "url";
+
+    public static final String JSON_TRAILER_LIST = "results";
+    public static final String JSON_TRAILER_KEY = "key";
+    public static final String JSON_TRAILER_SITE = "site";
 
     public static final String MOVIEDB_BASE_URL ="http://api.themoviedb.org/3/movie/";
     public static final String THUMBNAIL_BASE_PATH = "http://image.tmdb.org/t/p/w780";
     public static final String POSTER_BASE_PATH = "http://image.tmdb.org/t/p/w342";
 
+    public static final String MOVIE_ITEM = "movieitem";
 }

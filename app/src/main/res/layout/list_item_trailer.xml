@@ -10,6 +10,7 @@ android:foreground="?android:attr/selectableItemBackground">
     android:id="@+id/imgVideoThumbnail"
     android:layout_width="@dimen/imgVideoThumbnailWidth"
     android:layout_height="@dimen/imgVideoThumbnailHeight"
+    android:paddingRight="@dimen/fab_margin"
     android:contentDescription="@string/imgVideoThumbnailInfo"
     />
 

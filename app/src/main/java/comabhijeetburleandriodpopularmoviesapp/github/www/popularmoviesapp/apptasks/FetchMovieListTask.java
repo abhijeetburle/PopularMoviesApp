@@ -21,6 +21,8 @@ import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.Build
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.R;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.globalconstants.GlobalContants;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.FetchMovieListParam;
+import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.JsonParser;
+import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.MovieDBDataReader;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.MovieDBWrapper;
 
 /**
@@ -63,92 +65,14 @@ public class FetchMovieListTask extends AsyncTask<FetchMovieListParam, Void, Fet
     }
 
     private List<MovieDBWrapper> getMovieList(String strURI) {
-
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-        String responseJsonStr = null;
-
-        try {
-            URL url = new URL(strURI);
-
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream == null) {
-                return null;
+        String responseJsonStr = MovieDBDataReader.getDataFromURI(strURI);
+        if(responseJsonStr!=null) {
+            try {
+                return JsonParser.praseMovieList(responseJsonStr);
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, e.getMessage(), e);
             }
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line + "\n");
-            }
-
-            if (buffer.length() == 0) {
-                return null;
-            }
-            responseJsonStr = buffer.toString();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error ", e);
-            return null;
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
-                }
-            }
-        }
-
-        try {
-            return praseMovieList(responseJsonStr);
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-            e.printStackTrace();
         }
         return null;
-    }
-
-
-    private List<MovieDBWrapper> praseMovieList(String responseJson)
-            throws JSONException {
-        if (responseJson == null) {
-            return null;
-        }
-
-        JSONObject objResponseJson = new JSONObject(responseJson);
-        JSONArray jsonMovieListArray = objResponseJson.getJSONArray(GlobalContants.JSON_MOVIE_LIST);
-
-        List<MovieDBWrapper> resultStrs = new ArrayList<MovieDBWrapper>();
-        MovieDBWrapper objMovieDBWrapper;
-        for (int i = 0; i < jsonMovieListArray.length(); i++) {
-            JSONObject jsonMovieRecord = jsonMovieListArray.getJSONObject(i);
-            objMovieDBWrapper = new MovieDBWrapper();
-            objMovieDBWrapper.posterPath = jsonMovieRecord.getString(GlobalContants.JSON_POSTER_PATH);
-            objMovieDBWrapper.isAdult = jsonMovieRecord.getBoolean(GlobalContants.JSON_ADULT);
-            objMovieDBWrapper.overview = jsonMovieRecord.getString(GlobalContants.JSON_OVERVIEW);
-            objMovieDBWrapper.strReleaseDate = jsonMovieRecord.getString(GlobalContants.JSON_RELEASE_DATE);
-            objMovieDBWrapper.strId = jsonMovieRecord.getString(GlobalContants.JSON_ID);
-            objMovieDBWrapper.originalTitle = jsonMovieRecord.getString(GlobalContants.JSON_ORIGINAL_TITLE);
-            objMovieDBWrapper.originalLanguage = jsonMovieRecord.getString(GlobalContants.JSON_ORIGINAL_LANGAUGE);
-            objMovieDBWrapper.title = jsonMovieRecord.getString(GlobalContants.JSON_TITLE);
-            objMovieDBWrapper.backdropPath = jsonMovieRecord.getString(GlobalContants.JSON_BACKDROP_PATH);
-            objMovieDBWrapper.strPopularity = jsonMovieRecord.getString(GlobalContants.JSON_POPULARITY);
-            objMovieDBWrapper.strVoteCount = jsonMovieRecord.getString(GlobalContants.JSON_VOTE_COUNT);
-            objMovieDBWrapper.hasVideo = jsonMovieRecord.getBoolean(GlobalContants.JSON_VIDEO);
-            objMovieDBWrapper.strVoteAverage = jsonMovieRecord.getString(GlobalContants.JSON_RATING);
-
-            Log.d(LOG_TAG, "Information ::  Movie[" + objMovieDBWrapper + "]");
-            resultStrs.add(objMovieDBWrapper);
-        }
-        return resultStrs;
-
     }
 }

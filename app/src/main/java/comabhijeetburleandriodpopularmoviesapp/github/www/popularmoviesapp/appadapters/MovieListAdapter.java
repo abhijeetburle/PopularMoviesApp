@@ -1,4 +1,4 @@
-package comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp;
+package comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.appadapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.R;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.globalconstants.GlobalContants;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.MovieDBWrapper;
 
@@ -20,6 +21,10 @@ import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.
  */
 public class MovieListAdapter extends ArrayAdapter<MovieDBWrapper>
 {
+    private static final int VIEW_TYPE_SELECTED = 0;
+    private static final int VIEW_TYPE_NOT_SELECTED = 1;
+    private boolean mUseSelectedLayout = true;
+
     Context context;
     int layoutResourceId;
     int imageResourceId;
@@ -55,8 +60,21 @@ public class MovieListAdapter extends ArrayAdapter<MovieDBWrapper>
 
 
             MovieDBWrapper item = movies.get(position);
-            Picasso.with(context).load(GlobalContants.THUMBNAIL_BASE_PATH + item.posterPath).into(holder.image);
+            Picasso.with(context)
+                    .load(GlobalContants.THUMBNAIL_BASE_PATH + item.posterPath)
+                    .placeholder(R.drawable.placeholder_loading)
+                    .error(R.drawable.placeholder_error)
+                    .into(holder.image);
         }
         return objView;
+    }
+
+    public void setUseSelectedLayout(boolean useSelectedLayout) {
+        mUseSelectedLayout = useSelectedLayout;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (position == 0 && mUseSelectedLayout) ? VIEW_TYPE_SELECTED : VIEW_TYPE_NOT_SELECTED;
     }
 }

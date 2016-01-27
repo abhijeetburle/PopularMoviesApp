@@ -1,39 +1,42 @@
 package comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.appcallbacks.ICallbackSelected;
+import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.globalconstants.GlobalContants;
+import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.MovieDBWrapper;
 
+public class MainActivity extends AppCompatActivity implements ICallbackSelected<MovieDBWrapper> {
+
+    private static final String DETAIL_FRAGMENT_TAG = "DETAIL_FRAGMENT_TAG";
+    boolean mTwoPane = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-/*
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+        if(findViewById(R.id.fragment_detail_container)!=null) {
+            mTwoPane = true;
+            if(savedInstanceState == null){
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_detail_container, new DetailActivityFragment())
+                        .commit();
             }
-        });
-*/
+        }else{
+            mTwoPane = false;
+        }
+        MainActivityFragment objMainActivityFragment =
+                ((MainActivityFragment)getSupportFragmentManager()
+                    .findFragmentById(R.id.fragment));
+        objMainActivityFragment.setmUseSelectedLayout(!mTwoPane);
     }
 
     @Override
@@ -50,5 +53,25 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemSelected(MovieDBWrapper movie) {
+        if(mTwoPane){
+            Bundle args = new Bundle();
+            args.putParcelable(GlobalContants.MOVIE_ITEM, movie);
+
+            DetailActivityFragment objDetailActivityFragment = new DetailActivityFragment();
+            objDetailActivityFragment.setArguments(args);
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_detail_container, objDetailActivityFragment, DETAIL_FRAGMENT_TAG)
+                    .commit();
+        }else{
+            Intent objDetailIntent = new Intent(this, DetailActivity.class)
+                    .putExtra(GlobalContants.MOVIE_ITEM, movie);
+            startActivity(objDetailIntent);
+        }
     }
 }
