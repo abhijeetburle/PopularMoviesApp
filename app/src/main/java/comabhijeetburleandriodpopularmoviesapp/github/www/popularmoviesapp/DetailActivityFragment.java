@@ -1,17 +1,21 @@
 package comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -19,14 +23,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.appcallbacks.ICallbackLoaded;
-import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.apptasks.FetchMovieListTask;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.apptasks.FetchMovieReviewsTask;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.apptasks.FetchMovieTrailersTask;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.globalconstants.GlobalContants;
-import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.FetchMovieListParam;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.MovieDBReviewWrapper;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.MovieDBTrailerWrapper;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.MovieDBWrapper;
@@ -41,6 +42,7 @@ public class DetailActivityFragment extends Fragment{
     @Bind(R.id.imgPoster)  ImageView posterView;
     @Bind(R.id.txtPlotSynopsis)  TextView  txtPlotSynopsis;
     @Bind(R.id.txtUserRating) TextView txtUserRating;
+    @Bind(R.id.btnFav) Button btnbtnFav;
     @Bind(R.id.txtReleaseDate) TextView txtReleaseDate;
     @Bind(R.id.lblTrailer) TextView lblTrailer;
     @Bind(R.id.scrollviewTrailer) HorizontalScrollView scrollviewTrailer;
@@ -90,16 +92,27 @@ public class DetailActivityFragment extends Fragment{
             txtPlotSynopsis.setText(movie.overview);
         // <!-- user rating (called vote_average in the api) -->
         if(movie.strReleaseDate!=null)
-            txtUserRating .setText(movie.strVoteAverage+"/10");
+            txtUserRating .setText(movie.strVoteAverage + "/10");
         // <!-- release date      -->
         if(movie.strReleaseDate!=null)
             txtReleaseDate.setText(movie.strReleaseDate);
 
-        // DemoCode
+        btnbtnFav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = getContext();
+                int duration = Toast.LENGTH_SHORT;
 
+                Toast toast = Toast.makeText(context, "Favourite Clicked", duration);
+                TextView txtView = (TextView) toast.getView().findViewById(android.R.id.message);
+                if( txtView != null) txtView.setGravity(Gravity.CENTER);
+                toast.show();
+            }
+        });
+
+        // DemoCode
         List<MovieDBTrailerWrapper> objTrailers = new ArrayList<MovieDBTrailerWrapper>();
         List<MovieDBReviewWrapper> objReviews = new ArrayList<MovieDBReviewWrapper>();
-
 
         MovieDBTrailerWrapper objTrailer = new MovieDBTrailerWrapper();
         objTrailer.site="YouTube";
@@ -112,7 +125,6 @@ public class DetailActivityFragment extends Fragment{
         objReview.content="I felt like this was a tremendous end to Nolan's Batman trilogy";
         objReviews.add(objReview);
         objReviews.add(objReview);
-
         //Democode end
 
 

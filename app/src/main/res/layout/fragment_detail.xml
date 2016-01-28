@@ -74,6 +74,17 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:text="8.1/10"
                     tools:text="Rating"/>
+
+                <!-- Favourite button -->
+                <Button
+                    android:id="@+id/btnFav"
+                    style="@style/styleDefaultBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="@string/movie_details_fav"
+                    tools:text="Favourite"
+                    />
             </LinearLayout>
         </LinearLayout>
         <!-- A plot synopsis (called overview in the api) -->
@@ -91,7 +102,7 @@
             android:id="@+id/lblTrailer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/trailers"
+            android:text="@string/movie_details_trailers"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:visibility="gone"
             />
@@ -123,7 +134,7 @@
             android:id="@+id/lblReview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/reviews"
+            android:text="@string/movie_details_reviews"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:visibility="gone"
             />
