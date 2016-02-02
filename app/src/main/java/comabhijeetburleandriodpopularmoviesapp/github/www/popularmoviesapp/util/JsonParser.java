@@ -16,7 +16,7 @@ import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.globa
  */
 public class JsonParser {
     private static final String LOG_TAG = JsonParser.class.getSimpleName();
-    private static final int RECORDS_PERPAGE = 5;
+    private static final int RECORDS_PERPAGE = 15;
 
     public static MovieDBWrapper praseMovie(String responseJson)
             throws JSONException {
