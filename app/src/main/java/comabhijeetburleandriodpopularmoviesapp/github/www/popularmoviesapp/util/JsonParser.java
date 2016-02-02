@@ -16,6 +16,21 @@ import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.globa
  */
 public class JsonParser {
     private static final String LOG_TAG = JsonParser.class.getSimpleName();
+    private static final int RECORDS_PERPAGE = 5;
+
+    public static MovieDBWrapper praseMovie(String responseJson)
+            throws JSONException {
+        if (responseJson == null) {
+            return null;
+        }
+
+        JSONObject jsonMovieRecord = new JSONObject(responseJson);
+
+        MovieDBWrapper objMovieDBWrapper = new MovieDBWrapper(jsonMovieRecord);
+
+        Log.d(LOG_TAG, "Information ::  Movie[" + objMovieDBWrapper + "]");
+        return objMovieDBWrapper;
+    }
 
     public static List<MovieDBWrapper> praseMovieList(String responseJson)
             throws JSONException {
@@ -28,23 +43,9 @@ public class JsonParser {
 
         List<MovieDBWrapper> resultStrs = new ArrayList<MovieDBWrapper>();
         MovieDBWrapper objMovieDBWrapper;
-        for (int i = 0; i < jsonMovieListArray.length() && i < 5; i++) {
+        for (int i = 0; i < jsonMovieListArray.length() && i < RECORDS_PERPAGE; i++) {
             JSONObject jsonMovieRecord = jsonMovieListArray.getJSONObject(i);
-            objMovieDBWrapper = new MovieDBWrapper();
-            objMovieDBWrapper.posterPath = jsonMovieRecord.getString(GlobalContants.JSON_POSTER_PATH);
-            objMovieDBWrapper.isAdult = jsonMovieRecord.getBoolean(GlobalContants.JSON_ADULT);
-            objMovieDBWrapper.overview = jsonMovieRecord.getString(GlobalContants.JSON_OVERVIEW);
-            objMovieDBWrapper.strReleaseDate = jsonMovieRecord.getString(GlobalContants.JSON_RELEASE_DATE);
-            objMovieDBWrapper.strId = jsonMovieRecord.getString(GlobalContants.JSON_ID);
-            objMovieDBWrapper.originalTitle = jsonMovieRecord.getString(GlobalContants.JSON_ORIGINAL_TITLE);
-            objMovieDBWrapper.originalLanguage = jsonMovieRecord.getString(GlobalContants.JSON_ORIGINAL_LANGAUGE);
-            objMovieDBWrapper.title = jsonMovieRecord.getString(GlobalContants.JSON_TITLE);
-            objMovieDBWrapper.backdropPath = jsonMovieRecord.getString(GlobalContants.JSON_BACKDROP_PATH);
-            objMovieDBWrapper.strPopularity = jsonMovieRecord.getString(GlobalContants.JSON_POPULARITY);
-            objMovieDBWrapper.strVoteCount = jsonMovieRecord.getString(GlobalContants.JSON_VOTE_COUNT);
-            objMovieDBWrapper.hasVideo = jsonMovieRecord.getBoolean(GlobalContants.JSON_VIDEO);
-            objMovieDBWrapper.strVoteAverage = jsonMovieRecord.getString(GlobalContants.JSON_RATING);
-
+            objMovieDBWrapper = new MovieDBWrapper(jsonMovieRecord);
             Log.d(LOG_TAG, "Information ::  Movie[" + objMovieDBWrapper + "]");
             resultStrs.add(objMovieDBWrapper);
         }
@@ -97,4 +98,5 @@ public class JsonParser {
         }
         return resultStrs;
     }
+
 }

@@ -2,6 +2,6 @@
 <resources>
     <style name="MovieListStyle">
         <item name="android:choiceMode">singleChoice</item>
-        <item name="android:numColumns">1</item>
+        <item name="android:numColumns">3</item>
     </style>
 </resources>

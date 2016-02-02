@@ -1,7 +1,6 @@
 package comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.appdata;
 
 import android.content.ComponentName;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
@@ -83,7 +82,7 @@ public class TestMovieProvider  extends AndroidTestCase {
         // content://comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp/favourite/list/140607
         type = mContext.getContentResolver().getType(
                 FavouriteMovieEntry.buildFavoriteMovieUri("140607"));
-        Log.i(LOG_TAG, "["+FavouriteMovieEntry.buildFavoriteMovieUri("140607")+"]["+type+"]");
+        Log.i(LOG_TAG, "[" + FavouriteMovieEntry.buildFavoriteMovieUri("140607") + "][" + type + "]");
         assertEquals("Error: the FavouriteMovieEntry CONTENT_URI should " +
                         "return FavouriteMovieEntry.CONTENT_ITEM_TYPE",
                 FavouriteMovieEntry.CONTENT_ITEM_TYPE, type);
@@ -91,7 +90,7 @@ public class TestMovieProvider  extends AndroidTestCase {
         // content://comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp/favourite/list/140607/favourite_status
         type = mContext.getContentResolver().getType(
                 FavouriteMovieEntry.buildCheckIsFavourite("140607"));
-        Log.i(LOG_TAG, "["+FavouriteMovieEntry.buildCheckIsFavourite("140607") +"]["+type+"]");
+        Log.i(LOG_TAG, "[" + FavouriteMovieEntry.buildCheckIsFavourite("140607") + "][" + type + "]");
         // vnd.android.cursor.item/com.example.android.sunshine.app/weather/1419120000
         assertEquals("Error: the FavouriteMovieEntry CONTENT_URI should " +
                         "return FavouriteMovieEntry.CONTENT_ITEM_TYPE",
@@ -104,7 +103,7 @@ public class TestMovieProvider  extends AndroidTestCase {
         MovieDbHelper dbHelper = new MovieDbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        ContentValues testValues = TestUtilities.createMovieValues();
+        ContentValues testValues = TestUtilities.createMovieStarWarsValues();
         long movieId = TestUtilities.insertMoveiRecord(mContext, testValues);
         assertTrue("Unable to Insert FavouriteMovieEntry into the Database", movieId != -1);
 
@@ -120,10 +119,11 @@ public class TestMovieProvider  extends AndroidTestCase {
         );
 
         TestUtilities.validateCursor("testBasicQuery", movieCursor, testValues);
+        movieCursor.close();
     }
 
     public void testInsertReadProvider() {
-        ContentValues testValues = TestUtilities.createMovieValues();
+        ContentValues testValues = TestUtilities.createMovieStarWarsValues();
 
         // Register a content observer for our insert.  This time, directly with the content resolver
         TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
@@ -151,20 +151,88 @@ public class TestMovieProvider  extends AndroidTestCase {
 
         TestUtilities.validateCursor("testInsertReadProvider. Error validating FavouriteMovieEntry.",
                 cursor, testValues);
-        /*
+        cursor.close();
+
+        testValues = TestUtilities.createMovieAvengersValues();
+
+        movieUri = mContext.getContentResolver()
+                .insert(FavouriteMovieEntry.buildFavoriteMovieUri(
+                                testValues.get(FavouriteMovieEntry.COLUMN_THEMOVIEDB_ID)
+                                        .toString()
+                        ),
+                        testValues);
+
+        assertTrue(movieUri != null);
+
         // Get the joined Weather data for a specific date
-        weatherCursor = mContext.getContentResolver().query(
-                WeatherEntry.buildWeatherLocationWithDate(TestUtilities.TEST_LOCATION, TestUtilities.TEST_DATE),
+        cursor = mContext.getContentResolver().query(
+                FavouriteMovieEntry.buildFavoriteListUri(),
                 null,
                 null,
                 null,
                 null
         );
-        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location data for a specific date.",
-                weatherCursor, weatherValues);
-         */
+        // CHECK SORT : LIFO
+        cursor.moveToFirst();
+        TestUtilities.validateCursor("testInsertReadProvider. Error validating Sort FavouriteMovieEntry.",
+                cursor, testValues);
+        cursor.close();
+
+        /*
+        cursor.moveToFirst();
+        for ( int i = 0; i < cursor.getCount(); i++, cursor.moveToNext() ) {
+            Log.w(LOG_TAG, "["+cursor.getString(0)+"]["+cursor.getString(1)+"]["+cursor.getString(2)+"]");
+        }
+        cursor.close();
+        */
+
+
     }
 
+    public void testSelectRecord(){
+        testInsertReadProvider();
+        String movieId = TestUtilities.createMovieStarWarsValues()
+                .get(FavouriteMovieEntry.COLUMN_THEMOVIEDB_ID).toString();
+        Cursor cursor = mContext.getContentResolver().query(
+                FavouriteMovieEntry.buildCheckIsFavourite(movieId),
+                null, // leaving "columns" null just returns all the columns.
+                FavouriteMovieEntry.COLUMN_THEMOVIEDB_ID + "= ?", // cols for "where" clause
+                new String[]{movieId}, // values for "where" clause
+                null  // sort order
+        );
+        if(cursor!=null && cursor.getCount()>0) {
+            cursor.moveToFirst();
+            Log.i(LOG_TAG, "testSelectRecord: [" + cursor.getString(0) + "][" + cursor.getString(1) + "][" + cursor.getString(2) + "]");
+        }
+        assertTrue(cursor!=null && cursor.getCount()>0);
+
+    }
+    public void testDeleteRecord(){
+        String movieId = TestUtilities.createMovieStarWarsValues()
+                .get(FavouriteMovieEntry.COLUMN_THEMOVIEDB_ID).toString();
+
+        int count = mContext.getContentResolver()
+                .delete(FavouriteMovieEntry.buildFavoriteMovieUri(movieId)
+                        , FavouriteMovieEntry.COLUMN_THEMOVIEDB_ID + "= ?"
+                        , new String[]{movieId});
+
+        Log.i(LOG_TAG, "testDeleteRecord: info "+ count);
+
+        Cursor cursor = mContext.getContentResolver().query(
+                FavouriteMovieEntry.buildCheckIsFavourite(movieId),
+                null, // leaving "columns" null just returns all the columns.
+                FavouriteMovieEntry.COLUMN_THEMOVIEDB_ID + "= ?", // cols for "where" clause
+                new String[]{movieId}, // values for "where" clause
+                null  // sort order
+        );
+        if(cursor!=null && cursor.getCount()>0) {
+            cursor.moveToFirst();
+            Log.i(LOG_TAG, "testDeleteRecord: [" + cursor.getString(0) + "][" + cursor.getString(1) + "][" + cursor.getString(2) + "]");
+        }
+        assertFalse(cursor!=null && cursor.getCount()>0);
+
+
+    }
     public void testDeleteRecords() {
         testInsertReadProvider();
 

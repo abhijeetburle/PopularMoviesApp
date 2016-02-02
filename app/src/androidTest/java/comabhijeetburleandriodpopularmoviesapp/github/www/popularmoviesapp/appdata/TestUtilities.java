@@ -23,7 +23,7 @@ import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.
  * Created by abhijeet.burle on 2016/02/01.
  */
 public class TestUtilities extends AndroidTestCase {
-    public static ContentValues createMovieValues() {
+    public static ContentValues createMovieStarWarsValues() {
         MovieDBWrapper movie = new MovieDBWrapper();
         movie.strId = "140607";
         movie.posterPath = "/fYzpM9GmpBlIC893fNjoWCwE24H.jpg";
@@ -47,10 +47,18 @@ public class TestUtilities extends AndroidTestCase {
         return movie.getContentValues();
     }
 
+    public static ContentValues createMovieAvengersValues() {
+        MovieDBWrapper movie = new MovieDBWrapper();
+        movie.strId = "99861";
+        movie.posterPath = "/t90Y3G8UGQp0f0DrP60wRu9gfrH.jpg";
+        movie.strRegDate = DateFormatterUtil.getCurrentDateTime();
+
+        return movie.getContentValues();
+    }
+
     public static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {
         assertTrue("Empty cursor returned. " + error, valueCursor.moveToFirst());
         validateMovieRecord(error, valueCursor, expectedValues);
-        valueCursor.close();
     }
 
     public static void validateMovieRecord(String error, Cursor cursor, ContentValues expectedValues) {

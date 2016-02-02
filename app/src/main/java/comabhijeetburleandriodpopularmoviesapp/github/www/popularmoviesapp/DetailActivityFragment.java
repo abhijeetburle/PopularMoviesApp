@@ -1,8 +1,10 @@
 package comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -12,10 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,9 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.appcallbacks.ICallbackLoaded;
+import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.appdata.appcontracts.MovieContract.FavouriteMovieEntry;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.apptasks.FetchMovieReviewsTask;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.apptasks.FetchMovieTrailersTask;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.globalconstants.GlobalContants;
+import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.DateFormatterUtil;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.MovieDBReviewWrapper;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.MovieDBTrailerWrapper;
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.util.MovieDBWrapper;
@@ -39,10 +45,11 @@ public class DetailActivityFragment extends Fragment{
 
     private final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
 
+    @Bind(R.id.txtTitle) TextView  txtTitle;
     @Bind(R.id.imgPoster)  ImageView posterView;
     @Bind(R.id.txtPlotSynopsis)  TextView  txtPlotSynopsis;
     @Bind(R.id.txtUserRating) TextView txtUserRating;
-    @Bind(R.id.btnFav) Button btnbtnFav;
+    @Bind(R.id.btnFav) ToggleButton togglebtnFav;
     @Bind(R.id.txtReleaseDate) TextView txtReleaseDate;
     @Bind(R.id.lblTrailer) TextView lblTrailer;
     @Bind(R.id.scrollviewTrailer) HorizontalScrollView scrollviewTrailer;
@@ -63,18 +70,36 @@ public class DetailActivityFragment extends Fragment{
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
         Bundle args = getArguments();
-        MovieDBWrapper movie;
+        final MovieDBWrapper movie;
         if(args==null || args.getParcelable(GlobalContants.MOVIE_ITEM)==null){
             movie = new MovieDBWrapper();
+            // Clear the text
+            txtTitle.setText("");
+            txtPlotSynopsis.setText("");
+            txtUserRating .setText("");
+            txtReleaseDate.setText("");
+            togglebtnFav.setVisibility(View.GONE);
         }else{
             movie =  args.getParcelable(GlobalContants.MOVIE_ITEM);
+            togglebtnFav.setVisibility(View.VISIBLE);
         }
 
-
+        togglebtnFav.setChecked(false);
+        if(movie.strId!=null&&!"".equals(movie.strId)){
+            Cursor cursor = getContext().getContentResolver().query(
+                    FavouriteMovieEntry.buildCheckIsFavourite(movie.strId),
+                    null, // leaving "columns" null just returns all the columns.
+                    FavouriteMovieEntry.COLUMN_THEMOVIEDB_ID + "= ?", // cols for "where" clause
+                    new String[]{movie.strId}, // values for "where" clause
+                    null  // sort order
+            );
+            if(cursor!=null && cursor.getCount()>0){
+                togglebtnFav.setChecked(true);
+            }
+        }
         // <!-- original title -->
         if(movie.title!=null)
-            ((TextView) rootView.findViewById(R.id.txtTitle))
-                .setText(movie.title);
+            txtTitle.setText(movie.title);
         // <!-- movie poster image -->
         if(movie.posterPath!=null) {
             try {
@@ -97,16 +122,45 @@ public class DetailActivityFragment extends Fragment{
         if(movie.strReleaseDate!=null)
             txtReleaseDate.setText(movie.strReleaseDate);
 
-        btnbtnFav.setOnClickListener(new View.OnClickListener() {
+
+        togglebtnFav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Context context = getContext();
                 int duration = Toast.LENGTH_SHORT;
 
-                Toast toast = Toast.makeText(context, "Favourite Clicked", duration);
-                TextView txtView = (TextView) toast.getView().findViewById(android.R.id.message);
-                if( txtView != null) txtView.setGravity(Gravity.CENTER);
-                toast.show();
+                if(movie.strId!=null) {
+                    if (isChecked) {
+                        MovieDBWrapper newMovie = new MovieDBWrapper();
+                        newMovie.strId = movie.strId;
+                        newMovie.posterPath = movie.posterPath;
+                        newMovie.strRegDate = DateFormatterUtil.getCurrentDateTime();
+                        ContentValues addRecord = newMovie.getContentValues();
+                        Uri movieUri = context.getContentResolver()
+                                .insert(FavouriteMovieEntry.buildFavoriteMovieUri(newMovie.strId),
+                                        addRecord);
+                        if (movieUri != null) {
+                            Toast toast = Toast.makeText(context, "Favourite", duration);
+                            TextView txtView = (TextView) toast.getView().findViewById(android.R.id.message);
+                            if (txtView != null) txtView.setGravity(Gravity.CENTER);
+                            toast.show();
+                        }
+                        ;
+                    } else {
+                        Log.i(LOG_TAG, "onClick: UNCHECKED");
+                        context.getContentResolver()
+                                .delete(FavouriteMovieEntry.buildFavoriteMovieUri(movie.strId)
+                                        ,FavouriteMovieEntry.COLUMN_THEMOVIEDB_ID + "= ?"// cols for "where" clause
+                                        , new String[]{movie.strId} // values for "where" clause
+                                        );
+
+                        Toast toast = Toast.makeText(context, "Favourite removed", duration);
+                        TextView txtView = (TextView) toast.getView().findViewById(android.R.id.message);
+                        if (txtView != null) txtView.setGravity(Gravity.CENTER);
+                        toast.show();
+
+                    }
+                }
             }
         });
 
@@ -157,6 +211,19 @@ public class DetailActivityFragment extends Fragment{
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Bundle args = getArguments();
+        final MovieDBWrapper movie;
+        if(args==null || args.getParcelable(GlobalContants.MOVIE_ITEM)==null){
+            movie = new MovieDBWrapper();
+        }else{
+            movie =  args.getParcelable(GlobalContants.MOVIE_ITEM);
+        }
+        Log.w(LOG_TAG, "onViewCreated: "+ movie.toString());
     }
 
     private void addTrailers(List<MovieDBTrailerWrapper> objTrailers) {

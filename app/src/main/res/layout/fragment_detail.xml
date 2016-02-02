@@ -76,15 +76,23 @@
                     tools:text="Rating"/>
 
                 <!-- Favourite button -->
-                <Button
+                <ToggleButton
                     android:id="@+id/btnFav"
-                    style="@style/styleDefaultBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/imgFavWeight"
+                    android:layout_height="@dimen/imgFavHeight"
                     android:layout_gravity="left"
+                    android:background="@drawable/fav"
                     android:text="@string/movie_details_fav"
+                    android:textOn=""
+                    android:textOff=""
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     tools:text="Favourite"
                     />
+                <!--
+                style="@style/styleDefaultBtn"
+                android:layout_centerVertical="true"
+                 -->
             </LinearLayout>
         </LinearLayout>
         <!-- A plot synopsis (called overview in the api) -->

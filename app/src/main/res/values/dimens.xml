@@ -11,4 +11,6 @@
     <dimen name="detailsLayoutMarginDefault">8dp</dimen>
     <dimen name="imgVideoThumbnailHeight">180dp</dimen>
     <dimen name="imgVideoThumbnailWidth">240dp</dimen>
+    <dimen name="imgFavHeight">24dp</dimen>
+    <dimen name="imgFavWeight">24dp</dimen>
 </resources>

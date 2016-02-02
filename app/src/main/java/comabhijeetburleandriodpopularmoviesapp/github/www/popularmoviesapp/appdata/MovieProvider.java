@@ -18,18 +18,12 @@ import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.appda
  */
 public class MovieProvider extends ContentProvider {
 
-    // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MovieDbHelper mOpenHelper;
 
     static final int MOVIE_FAV_LIST = 100;
     static final int MOVIE_FAV_DETAILS = 101;
     static final int MOVIE_FAV_CHECK = 102;
-    static final int MOVIE_FAV_ADD = 103;
-    static final int MOVIE_FAV_DELETE = 104;
-
-
-    private static final SQLiteQueryBuilder sGetFavMovieListBuilder = new SQLiteQueryBuilder();
 
     @Override
     public boolean onCreate() {
@@ -51,7 +45,7 @@ public class MovieProvider extends ContentProvider {
                         selectionArgs,
                         null,
                         null,
-                        FavouriteMovieEntry.COLUMN_REG_DATE + " ASC"
+                        FavouriteMovieEntry.COLUMN_REG_DATE + " DESC"
                 );
                 break;
             }
@@ -159,18 +153,11 @@ public class MovieProvider extends ContentProvider {
     }
 
     static UriMatcher buildUriMatcher() {
-        // URI.  It's common to use NO_MATCH as the code for this case.
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = MovieContract.CONTENT_AUTHORITY;
-
-        // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, MovieContract.PATH_FAVOURITE + "/list", MOVIE_FAV_LIST);
         matcher.addURI(authority, MovieContract.PATH_FAVOURITE + "/list/#", MOVIE_FAV_DETAILS);
         matcher.addURI(authority, MovieContract.PATH_FAVOURITE + "/list/#/favourite_status", MOVIE_FAV_CHECK);
-        /*
-        matcher.addURI(authority, MovieContract.PATH_FAVOURITE + "/list/#/add_item/*", MOVIE_FAV_ADD);
-        matcher.addURI(authority, MovieContract.PATH_FAVOURITE + "/list/#/remove_item", MOVIE_FAV_DELETE);
-        */
         return matcher;
     }
 

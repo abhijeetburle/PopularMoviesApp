@@ -10,6 +10,7 @@
         android:id="@+id/imgViewMoviePosterThumbnail"
         android:layout_width="match_parent"
         android:layout_height="@dimen/imgPosterHeight"
+        style="@style/MovieListItemStyle"
         />
 </FrameLayout>
 

@@ -4,7 +4,11 @@ import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.appdata.appcontracts.MovieContract.FavouriteMovieEntry;
+import comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.globalconstants.GlobalContants;
 
 /**
  * Created by abhijeet.burle on 2016/01/20.
@@ -55,6 +59,23 @@ public class MovieDBWrapper extends MovieDBBaseWrapper implements Parcelable {
             return new MovieDBWrapper[size];
         }
     };
+
+    public MovieDBWrapper(JSONObject jsonMovieRecord) throws JSONException {
+        posterPath = jsonMovieRecord.getString(GlobalContants.JSON_POSTER_PATH);
+        isAdult = jsonMovieRecord.getBoolean(GlobalContants.JSON_ADULT);
+        overview = jsonMovieRecord.getString(GlobalContants.JSON_OVERVIEW);
+        strReleaseDate = jsonMovieRecord.getString(GlobalContants.JSON_RELEASE_DATE);
+        strId = jsonMovieRecord.getString(GlobalContants.JSON_ID);
+        originalTitle = jsonMovieRecord.getString(GlobalContants.JSON_ORIGINAL_TITLE);
+        originalLanguage = jsonMovieRecord.getString(GlobalContants.JSON_ORIGINAL_LANGAUGE);
+        title = jsonMovieRecord.getString(GlobalContants.JSON_TITLE);
+        backdropPath = jsonMovieRecord.getString(GlobalContants.JSON_BACKDROP_PATH);
+        strPopularity = jsonMovieRecord.getString(GlobalContants.JSON_POPULARITY);
+        strVoteCount = jsonMovieRecord.getString(GlobalContants.JSON_VOTE_COUNT);
+        hasVideo = jsonMovieRecord.getBoolean(GlobalContants.JSON_VIDEO);
+        strVoteAverage = jsonMovieRecord.getString(GlobalContants.JSON_RATING);
+    }
+
     /**
      * Describe the kinds of special objects contained in this Parcelable's
      * marshalled representation.

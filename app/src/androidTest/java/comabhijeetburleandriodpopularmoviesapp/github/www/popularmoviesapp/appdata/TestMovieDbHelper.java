@@ -71,7 +71,7 @@ public class TestMovieDbHelper extends AndroidTestCase {
         db.close();
     }
     public void testMovieTable() {
-        ContentValues testValues = TestUtilities.createMovieValues();
+        ContentValues testValues = TestUtilities.createMovieStarWarsValues();
         TestUtilities.insertMoveiRecord(mContext, testValues);
 
         MovieDbHelper dbHelper = new MovieDbHelper(mContext);

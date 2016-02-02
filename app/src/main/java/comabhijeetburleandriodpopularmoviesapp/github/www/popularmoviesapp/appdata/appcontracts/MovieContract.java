@@ -56,16 +56,5 @@ public class MovieContract {
             // content://comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp/favourite/list/140607/favourite_status
             return CONTENT_URI.buildUpon().appendPath("list").appendPath(strTheMovieDBId).appendPath("favourite_status").build();
         }
-        /*
-        public static Uri buildAddFavourite(String strTheMovieDBId) {
-            // content://comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp/favourite/list/140607/add_item?poster_path=/fYzpM9GmpBlIC893fNjoWCwE24H.jpg
-            return CONTENT_URI.buildUpon().appendPath("/list/"+strTheMovieDBId).appendPath("/add_item").build();
-        }
-
-        public static Uri buildDeleteFavourite(String strTheMovieDBId) {
-            // content://comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp/favourite/list/140607/remove_item
-            return CONTENT_URI.buildUpon().appendPath("/list/"+strTheMovieDBId).appendPath("/remove_item").build();
-        }
-        */
     }
 }
