@@ -38,4 +38,6 @@
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
+
+    <string name="content_authority">comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp</string>
 </resources>
