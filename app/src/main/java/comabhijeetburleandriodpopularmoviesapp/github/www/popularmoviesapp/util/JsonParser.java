@@ -43,7 +43,7 @@ public class JsonParser {
 
         List<MovieDBWrapper> resultStrs = new ArrayList<MovieDBWrapper>();
         MovieDBWrapper objMovieDBWrapper;
-        for (int i = 0; i < jsonMovieListArray.length() && i < RECORDS_PERPAGE; i++) {
+        for (int i = 0; i < jsonMovieListArray.length(); i++) {
             JSONObject jsonMovieRecord = jsonMovieListArray.getJSONObject(i);
             objMovieDBWrapper = new MovieDBWrapper(jsonMovieRecord);
             Log.d(LOG_TAG, "Information ::  Movie[" + objMovieDBWrapper + "]");

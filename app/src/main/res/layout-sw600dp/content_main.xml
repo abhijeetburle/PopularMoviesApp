@@ -15,8 +15,9 @@
         android:id="@+id/fragment"
         android:name="comabhijeetburleandriodpopularmoviesapp.github.www.popularmoviesapp.MainActivityFragment"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/fab_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:layout="@layout/fragment_main"
      />
@@ -24,8 +25,9 @@
     <FrameLayout
         android:id="@+id/fragment_detail_container"
         android:layout_width="0dp"
-        android:layout_weight="4"
+        android:layout_weight="5"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/fab_margin"
      />
     <!--
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
